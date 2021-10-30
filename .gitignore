@@ -1,3 +1,10 @@
+# onenote files
 *.one
+
+# pyinsteller files
 dist/
+build/
+main.spec
+
+# python cache
 __pycache__/

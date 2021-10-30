@@ -17,7 +17,9 @@ while True:
 		print()	# return
 
 		formula = input("Inserisci un composto inorganico binario o ternario: ")
-		compound = Parser.compoundType(*Parser.parseString(formula))	# analyze formula
+
+		parser = Parser()	# no problems if exception in previous formula
+		compound = parser.compoundType(*parser.parseString(formula))	# analyze formula
 
 		if 'nomenclature' not in globals() or nomenclature != 0:	# if nomenclature does not exists and has not been set to 'all'
 			nomenclature = int(input("0: Tutte, 1: Tradizionale, 2: IUPAC, 3: Stock: "))

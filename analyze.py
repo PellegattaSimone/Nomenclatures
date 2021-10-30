@@ -3,73 +3,67 @@ from binary import *
 from ternary import *
 
 class Parser:
-	__element = ''	# element symbol
-	__quantity = 1	# how many instances of an element
-	__compound = []	# all elements
-	__parenthesis = 0	# is a parenthesis open? 0: no, 1: yes, 2: just closed
-	__list = []	# temporary store elements inside parenthesis
+	def __init__(self):
+		self.__element = ''	# element symbol
+		self.__quantity = 1	# how many instances of an element
+		self.__compound = []	# all elements
+		self.__parenthesis = 0	# is a parenthesis open? 0: no, 1: yes, 2: just closed
+		self.__list = []	# temporary store elements inside parenthesis
 
-	@staticmethod
-	def __newElement():
-		if Parser.__element != '':	# if not empty
-			if Parser.__parenthesis == 0:
-				Parser.__compound.append(Element(Parser.__element, Parser.__quantity))	# add to compound list
+	def __newElement(self):
+		if self.__element != '':	# if not empty
+			if self.__parenthesis == 0:
+				self.__compound.append(Element(self.__element, self.__quantity))	# add to compound list
 			else:
-				Parser.__list.append(Element(Parser.__element, Parser.__quantity))	# add to parenthesis list
+				self.__list.append(Element(self.__element, self.__quantity))	# add to parenthesis list
 
-			Parser.__element = ''
-			Parser.__quantity = 1	# reset both element and quantity for the next one
+			self.__element = ''
+			self.__quantity = 1	# reset both element and quantity for the next one
 
-	@staticmethod
-	def __closeParenthesis(quantity = 1):
-		for element in Parser.__list:
+	def __closeParenthesis(self, quantity = 1):
+		for element in self.__list:
 			element.quantity *= quantity	# multiply quantity by parenthesis number
 		
-		Parser.__compound += Parser.__list	# transfer parenthesis list to elements list
-		Parser.__list = []
+		self.__compound += self.__list	# transfer parenthesis list to elements list
+		self.__list = []
 
-		Parser.__parenthesis = 0	# closed
+		self.__parenthesis = 0	# closed
 
-	@staticmethod
-	def parseString(formula):
-		Parser.__element = ''	# reset in case of exception in previous formula
-		Parser.__quantity = 1	# reset in case of exception in previous formula
-		Parser.__compound = []	# list of all elements
-
+	def parseString(self, formula):
 		try:
 			for letter in formula:
 				if letter.isupper():
-					Parser.__newElement()
-					Parser.__element += letter
+					self.__newElement()
+					self.__element += letter
 
 				elif letter.islower():
-					Parser.__element += letter
+					self.__element += letter
 
 				elif letter.isnumeric():
-					if(Parser.__parenthesis == 2):	# if parenthesis just closed
-						Parser.__closeParenthesis(int(letter))	# group quantity > 10 not supported
-					elif Parser.__quantity == 1:
-						Parser.__quantity = int(letter)
+					if(self.__parenthesis == 2):	# if parenthesis just closed
+						self.__closeParenthesis(int(letter))	# group quantity > 10 not supported
+					elif self.__quantity == 1:
+						self.__quantity = int(letter)
 					else:
-						Parser.__quantity = Parser.__quantity * 10 + int(letter)	# in case of two-digit numbers
+						self.__quantity = self.__quantity * 10 + int(letter)	# in case of two-digit numbers
 
 				elif letter == '(':
-					Parser.__newElement()	# else in letter.isupper() it would find an open parenthesis
-					Parser.__parenthesis = 1	# open
+					self.__newElement()	# else in letter.isupper() it would find an open parenthesis
+					self.__parenthesis = 1	# open
 
 				elif letter == ')':
-					Parser.__newElement()
-					Parser.__parenthesis = 2	# just closed (for letter.isnumeric())
+					self.__newElement()
+					self.__parenthesis = 2	# just closed (for letter.isnumeric())
 
 				else:
 					raise InputError(letter + " non è un carattere valido")
 			else:	# the end of the for loop
-				Parser.__newElement()
+				self.__newElement()
 
-				if(Parser.__parenthesis == 2):	# if parenthesis just closed
-					Parser.__closeParenthesis()
+				if(self.__parenthesis == 2):	# if parenthesis just closed
+					self.__closeParenthesis()
 			
-			return Parser.__compound
+			return self.__compound
 
 		except Exception as e:
 			# temp:further handling (?)
