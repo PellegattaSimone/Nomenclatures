@@ -55,13 +55,21 @@ class TernarySalt:
 
 	def mount(self, nomenclature = Nomenclature.IUPAC):
 		oxNonMet = Compound.parseOx(self, "nonmetal")
+
+		originalOx = self.nonmetal.oxidation	# save for oxPosition
+		self.nonmetal.oxidation = [oxNonMet]	# else in compounds such as Cr2(SO4)3 it will find different oxidation numbers
+
 		oxMet = Compound.parseOx(self, "metal")
+
+		self.nonmetal.oxidation = originalOx	# restore actual oxidation numbers
+
+		assert oxNonMet * self.nonmetal.quantity + oxMet * self.metal.quantity + self.oxygen.oxidation[0] * self.oxygen.quantity == 0
 
 		if nomenclature == Nomenclature.TRADITIONAL:
 			posNonMet = Compound.oxPosition(self.nonmetal, oxNonMet).value	# 0, 1, 2, 3, 4
 			posMet = Compound.oxPosition(self.metal, oxMet).value	# 0, 1, 2, 3, 4
 
-			return "ipo" if posNonMet == Traditional.IPO.value else ("per" if posNonMet == Traditional.PER.value else '') + self.nonmetal.prefix2 + ("ito" if posNonMet <= Traditional.OSO.value else "ato") + ' ' + ("di " + self.metal.name if posMet == Traditional.UNIQUE.value else ("ipo" if posMet == Traditional.IPO.value else ("per" if posMet == Traditional.PER.value else '')) + self.metal.prefix + ("oso" if posMet <= Traditional.OSO.value else "ico"))	# temp: remove parenthesis if redundant
+			return ("ipo" if posNonMet == Traditional.IPO.value else ("per" if posNonMet == Traditional.PER.value else '')) + self.nonmetal.prefix2 + ("ito" if posNonMet <= Traditional.OSO.value else "ato") + ' ' + ("di " + self.metal.name if posMet == Traditional.UNIQUE.value else ("ipo" if posMet == Traditional.IPO.value else ("per" if posMet == Traditional.PER.value else '')) + self.metal.prefix + ("oso" if posMet <= Traditional.OSO.value else "ico"))	# temp: remove parenthesis if redundant
 
 		elif nomenclature == Nomenclature.IUPAC:
 			return Compound.getPrefixNo1(self.oxygen.quantity) + "osso" + self.nonmetal.prefix2 + 'ato' + Compound.getRomanParenthesis(oxNonMet) + ' di ' + self.metal.name + Compound.getRomanParenthesis(oxMet, self.metal)
