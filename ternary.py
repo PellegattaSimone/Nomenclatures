@@ -19,7 +19,7 @@ class Hydroxide:
 			return Compound.getPrefixNo1(self.oxygen.quantity) + "idrossido di " + Compound.getPrefixNo1(self.metal.quantity) + self.metal.name
 
 		elif nomenclature == Nomenclature.STOCK:
-			return "idrossido di " + self.metal.name + Compound.getRomanParenthesis(ox)
+			return "idrossido di " + self.metal.name + Compound.getRomanParenthesis(ox, self.metal)
 
 		else:
 			raise InputError("Nomenclatura non valida")
@@ -64,7 +64,7 @@ class TernarySalt:
 			return "ipo" if posNonMet == Traditional.IPO.value else ("per" if posNonMet == Traditional.PER.value else '') + self.nonmetal.prefix2 + ("ito" if posNonMet <= Traditional.OSO.value else "ato") + ' ' + ("di " + self.metal.name if posMet == Traditional.UNIQUE.value else ("ipo" if posMet == Traditional.IPO.value else ("per" if posMet == Traditional.PER.value else '')) + self.metal.prefix + ("oso" if posMet <= Traditional.OSO.value else "ico"))	# temp: remove parenthesis if redundant
 
 		elif nomenclature == Nomenclature.IUPAC:
-			return Compound.getPrefixNo1(self.oxygen.quantity) + "osso" + self.nonmetal.prefix2 + 'ato' + Compound.getRomanParenthesis(oxNonMet) + ' di ' + self.metal.name + Compound.getRomanParenthesis(oxMet)
+			return Compound.getPrefixNo1(self.oxygen.quantity) + "osso" + self.nonmetal.prefix2 + 'ato' + Compound.getRomanParenthesis(oxNonMet) + ' di ' + self.metal.name + Compound.getRomanParenthesis(oxMet, self.metal)
 
 		elif nomenclature == Nomenclature.STOCK:
 			raise InputError("Nomenclatura stock non esistente per questo composto")

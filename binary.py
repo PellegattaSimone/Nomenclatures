@@ -13,7 +13,7 @@ class Oxide(ABC):	# abstract
 	
 	@staticmethod
 	def _stock(element, ox):
-		return "ossido di " + element.name + Compound.getRomanParenthesis(ox)
+		return "ossido di " + element.name + Compound.getRomanParenthesis(ox, element)	# basic oxides can have unique oxidation numbers
 
 class BasicOxide(Oxide):
 	def __init__(self, metal, oxygen):
@@ -71,10 +71,10 @@ class Hydracid:
 			return "acido " + self.halogen.prefix2 + "idrico"	# prefix2 for S 
 
 		elif nomenclature == Nomenclature.IUPAC:
-			return Compound.getPrefixNo1(self.halogen.quantity) + self.halogen.prefix + "uro di " + Compound.getPrefixNo1(self.hydrogen.quantity) + self.hydrogen.name
+			return Compound.getPrefixNo1(self.halogen.quantity) + self.halogen.prefix2 + "uro di " + Compound.getPrefixNo1(self.hydrogen.quantity) + self.hydrogen.name
 
 		elif nomenclature == Nomenclature.STOCK:
-			return self.halogen.prefix + "uro di " + self.hydrogen.name + Compound.getRomanParenthesis(ox, True)	# absolute value for oxidation number
+			return self.halogen.prefix2 + "uro di " + self.hydrogen.name + Compound.getRomanParenthesis(ox, None, True)	# absolute value for oxidation number
 
 		else:
 			raise InputError("Nomenclatura non valida")
@@ -101,7 +101,7 @@ class Hydride(ABC):	# abstract class
 	
 	@staticmethod
 	def _stock(element, ox, absolute = False):
-		return "idruro di " + element.name + Compound.getRomanParenthesis(ox, absolute)
+		return "idruro di " + element.name + Compound.getRomanParenthesis(ox, element, absolute)	# metallix hydrides can have unique oxidation numbers
 
 	__common = {
 		'BH3': "borano",
@@ -177,13 +177,13 @@ class BinarySalt:
 		if nomenclature == Nomenclature.TRADITIONAL:
 			pos = Compound.oxPosition(self.metal, ox).value	# 0, 1, 2, 3, 4
 
-			return self.nonmetal.prefix + "uro " + ("di " + self.metal.name if pos == Traditional.UNIQUE.value else ("ipo" if pos == Traditional.IPO.value else ("per" if pos == Traditional.PER.value else '')) + self.metal.prefix + ("oso" if pos <= Traditional.OSO.value else "ico"))
+			return self.nonmetal.prefix2 + "uro " + ("di " + self.metal.name if pos == Traditional.UNIQUE.value else ("ipo" if pos == Traditional.IPO.value else ("per" if pos == Traditional.PER.value else '')) + self.metal.prefix + ("oso" if pos <= Traditional.OSO.value else "ico"))
 
 		elif nomenclature == Nomenclature.IUPAC:
-			return Compound.getPrefixNo1(self.nonmetal.quantity) + self.nonmetal.prefix + "uro di " + Compound.getPrefixNo1(self.metal.quantity) + self.metal.name
+			return Compound.getPrefixNo1(self.nonmetal.quantity) + self.nonmetal.prefix2 + "uro di " + Compound.getPrefixNo1(self.metal.quantity) + self.metal.name
 
 		elif nomenclature == Nomenclature.STOCK:
-			return self.nonmetal.prefix + "uro di " + self.metal.name + Compound.getRomanParenthesis(ox)	# absolute value for oxidation number
+			return self.nonmetal.prefix2 + "uro di " + self.metal.name + Compound.getRomanParenthesis(ox, self.metal)	# absolute value for oxidation number
 
 		else:
 			raise InputError("Nomenclatura non valida")

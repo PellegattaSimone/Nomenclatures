@@ -82,12 +82,16 @@ class Compound:
 		return Compound.prefixes[number] if number != 1 else ''	# to exclude mono prefix
 	
 	@staticmethod
-	def getRomanParenthesis(number, absolute = False):
-		if absolute:
+	def getRomanParenthesis(number, noRedundancy = None, absolute = False):
+		if absolute:	# convert to absolute or must be absolute
 			number = abs(number)
 		else:
 			assert number > 0	# oxidation number must be positive
 
+		if noRedundancy is not None:	# no parenthesis if unique oxidation number
+			if Compound.oxPosition(noRedundancy, number) == Traditional.UNIQUE:
+				return ''	# no parenthesis
+		
 		return '(' + Compound.roman[number] + ')'
 
 	prefixes = {	# for IUPAC prefixes

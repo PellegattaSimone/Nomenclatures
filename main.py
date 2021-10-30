@@ -6,8 +6,7 @@ from analyze import *	# mandatory
 
 '''
 	Still missing:
-	* remove parenthesis when redundant
-	* analyze compounds with more than 4 oxidation number for traditional (if somehow possible)
+	* analyze compounds with more than 4 oxidation numbers for traditional (if somehow possible)
 	* meta - piro - orto
 '''
 

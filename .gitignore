@@ -1,2 +1,3 @@
 *.one
 dist/
+__pycache__/
